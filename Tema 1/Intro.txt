@@ -1,0 +1,43 @@
+El objetivo es construir imagenes o animaciones con el mayor gradi de realismo.
+
+Se tienen en cuenta los modelo smatematicos para las limitaciones de dispositivos de entrada y salida para simular visualizaciones.
+Se utilizan transformaciones como:
+  Rotacion
+  Traslacion
+  Escalamiento
+  
+Computacion grafica: Imagen completamente generada por computadora. Imagenes fijas o animadas. Importancia del realismo. Sintetizar imagenes.
+Procesamiento Digital de Imagen: Captacion de imagen con camara para luego ser procesada. Procesamiento para captar patrones. Calidad minima necesaria. Analizar imagenes.
+
+Areas involucradas:
+  Graficas y diagramas.
+  Diseño asistido por Computadora
+  Realidad virtual.
+  Educacion (p.ej. mapa)
+  Arte.
+  Entretenimiento.
+  Interfaz de usuario.
+  
+Requerimientos:
+  Computadora como unidad de procesamiento para manejar insumos de entrada para ofrecer salidas.
+  Salida:
+    Monitor, impresora, plotter
+  Entrada
+    Teclado, mouse, lapiz optico, codigo de barras, microfono, camara
+  Puertos externos:
+    USB, HDMI, óptico
+  Puertos para comunicación remota:
+    Tarjetas de red, tarjetas inalambricas
+  
+Monitor:
+  Compuesto por colores RGB, donde cada color utiliza un byte, teniendo 2^24 colores ~ 16*10^6 colores.
+  Resolucion medida en pixeles (High Resolution > 1024*1024)
+  Persistencia para mantener la luminosidad del color por cierto tiempo. (Si no se tiene, se percibe como parpadeo)
+  Velocidad de refrescamiento (> 25fps) Cantidad de imagenes por segundo para tener sensacion de fluidez.
+  Dados la paleta de colores, resolucion y refresh rate, es necesario una taza de velocidad=(resolucion*(bytes por color)*(bits por byte)*fps)
+  Relacion de aspecto
+  Barrido por linea, aleatorio
+  Tamaño es en diagonal.
+  Emisiva (plasma=mezcla de gases y la tension descompone el gas) y No Emisiva (LCD=cristales polarizados)
+  Pantallas tactiles (diodos infrarrojos, electrico con 2 placas, ondas de alta frecuencia)
+  
