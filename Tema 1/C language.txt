@@ -1,0 +1,34 @@
+Fue desarrollado para escribir el "kernel" de UNIX.
+Tiene funcionalidad de bajo y alto nivel.
+Tiene manejo explícito de apuntadores.
+No tiene recolector de basura. Se maneja explícitamente: #apuntador# malloc (se utiliza con sizeof); #eliminador de apuntador# free.
+No utiliza multihilo (proceso liviano), sino que clona procesos (procesos pesados).
+
+Extensión:
+  .c ANSI C
+  .cpp c++ o c#
+  
+librerías: {#include <name>}
+constante: {#define Nombre valor}
+variables globales: {int, float, char, long, short, ...}; ofrece arreglos y estructura
+tipo: {main() {...
+    instrucciones (while, do-while, for, break, continue, if ... then, switch, return)
+    }
+  }
+  
+Conversión de tipos es débil:
+  real -> int (aplica piso)
+  char -> int (convierte de entero a UNICODE)
+  int -> char
+  
+Arreglos son definidos con tamaño estáticamente en tiempo de compilación. {int a[15]}
+  Se utiliza malloc para crear nuevos arreglos y utilizar los apuntadores. El final de la lista tiene valor NULL.
+  Cuando agregas un intermedio, el nuevo creado apunta al siguiente y luego se rompe el apuntador.
+  
+  Sintaxis:
+    Declaración: {int *a;}
+    Asignación de valor: {*a=3;}
+    * := contenido de lo apuntado
+    & := dirección de memoria de una celda
+    
+    En la memoria, existen espacios reservados para la pila (variables locales a subrutinas y que desaparecen) y heap.
