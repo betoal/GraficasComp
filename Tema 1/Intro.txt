@@ -34,6 +34,7 @@ Monitor:
   Resolucion medida en pixeles (High Resolution > 1024*1024)
   Persistencia para mantener la luminosidad del color por cierto tiempo. (Si no se tiene, se percibe como parpadeo)
   Velocidad de refrescamiento (> 25fps) Cantidad de imagenes por segundo para tener sensacion de fluidez.
+  Velocidad de transferencia: Mínima velocidad de transferencia al monitor (VT=A.B.*log(1+S/N))
   Dados la paleta de colores, resolucion y refresh rate, es necesario una taza de velocidad=(resolucion*(bytes por color)*(bits por byte)*fps)
   Relacion de aspecto
   Barrido por linea, aleatorio
@@ -41,3 +42,11 @@ Monitor:
   Emisiva (plasma=mezcla de gases y la tension descompone el gas) y No Emisiva (LCD=cristales polarizados)
   Pantallas tactiles (diodos infrarrojos, electrico con 2 placas, ondas de alta frecuencia)
   
+Paralelismo para acelerar el procesamiento:
+  Múltiples procesadores cercanos, pudiendo compartir RAM o no.
+    Multinúcleo: 80-1000
+    Cluster <1,000,000
+    
+GPU
+  Coprocesador dedicado al procesamiento de gráficos.
+  Suavizado de bordes y procesamiento de texturas
