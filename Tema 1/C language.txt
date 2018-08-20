@@ -32,3 +32,44 @@ Arreglos son definidos con tamaño estáticamente en tiempo de compilación. {in
     & := dirección de memoria de una celda
     
     En la memoria, existen espacios reservados para la pila (variables locales a subrutinas y que desaparecen) y heap.
+    
+Necesidad de Estructuras de Datos Dinámicas:
+  C -> Tiene apuntadores gestionados manualmente con malloc/free
+  C++ -> Es posible con new/delete
+  En ambos no hay garbage collector.
+  Ambos tienen apuntadores:
+    Estructuras dinámicas
+    Pase de parámetros con retorno.
+      Al llamar una función o rutina, existen parámetros que cambian su valor y lo regresan (por referencia), mientras que existen otros que no regresan valor cambiado (por valor).
+      {int a=2, b=2;
+      A(a,b)
+      void A(int &a[por referencia], int b[por valor])} #C++
+      {int *a=2, b=2;
+      A(&a,b)
+      void A(int *c, int d)} #C
+  Arreglo: Estructura de datos estáticas (define tamaño en tiempo de compilación). Su solución:
+    C: listas enlazadas. Se define un tipo de datos homogéneo [struct]
+      {struct Nombre { campos de estructura } }
+      {typedef struct Nombre { campos de estructura } Nombre tipo; }
+      
+      { # Estructura estática
+      typedef struct E {
+        char nom[27];
+        int ID;
+        float salario;
+        } Empleado;
+        
+        Empleado e;
+        e.ID=123; # . es operador para acceder a campos de estructura
+      }
+      
+      { # Estructura dinámica
+      typedef struct L {
+        int a;
+        struct L *ptr;
+        } LISTA;
+        
+        LISTA *p;
+      } # Cuando se tienen apuntadores, no se utiliza . sino ->
+      
+    C++: librerías pero se pueden utilizar manualmente las listas de C.
