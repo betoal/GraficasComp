@@ -49,8 +49,10 @@ void search(struct LISTA* head, int x)
 {
     if (head == NULL)
         return;
-    if (head->n == x)
+    if (head->n >= x) {
         insertAfter(head,x);
+	return;
+    }
     search(head->ptr, x);
 }
 
