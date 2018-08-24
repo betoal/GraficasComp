@@ -10,7 +10,7 @@ typedef struct list_int {
 	struct list_int *ptr;
 } LISTA;
 
-LISTA *init_list, *aux, *e;
+LISTA *init_list, *aux, *e, *temp;
 int Elems = 1;
 
 void insertAfter(struct LISTA* prev_node, int new_data)
@@ -28,10 +28,10 @@ void insertAfter(struct LISTA* prev_node, int new_data)
 
 void deleteNode(struct LISTA **head_ref, int key)
 {
-    struct LISTA* temp = *head_ref, *prev;
+    struct LISTA* temp = *init_list, *prev;
     if (temp != NULL && temp->data == key)
     {
-        *head_ref = temp->next;
+        *init_list = temp->next;
         free(temp);
         return;
     }
@@ -45,6 +45,15 @@ void deleteNode(struct LISTA **head_ref, int key)
     free(temp);
 }
 
+void search(struct LISTA* head, int x)
+{
+    if (head == NULL)
+        return;
+    if (head->n == x)
+        insertAfter(head,x);
+    search(head->ptr, x);
+}
+
 
 int main() {
 
@@ -52,18 +61,16 @@ int main() {
 	cout << "Dar 5 elementos ordenados a la lista\n";
 	e = (LISTA*) malloc(sizeof(LISTA));
 	cout << "Elemento " << Elems << "  ";
-	cin >> e->n;
+	cin >> temp->n;
+	search(init_list,temp->n);
 	e->ptr = NULL;
 	aux = e;
 	init_list = e;
 	Elems++;
 	while (Elems <= 5) {
-		e = (LISTA*) malloc(sizeof(LISTA));
 		cout << "Elemento " << Elems << "  ";
-		cin >> e->n;
-		aux->ptr = e;
-		e->ptr = NULL;
-		aux = e;
+		cin >> temp->n;
+		search(init_list,temp->n);
 		Elems++;
 	}
 	cout << "Los valores son: \n";
