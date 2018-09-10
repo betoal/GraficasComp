@@ -1,3 +1,45 @@
-﻿  main.cpp
-  Prueba.vcxproj -> C:\Users\hca\Documents\GraficasComp\OpenGL\Prueba\Debug\Prueba.exe
-  Prueba.vcxproj -> C:\Users\hca\Documents\GraficasComp\OpenGL\Prueba\Debug\Prueba.pdb (Full PDB)
+﻿  test.cpp
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(33): error C3861: 'glutPostRedisplay': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(39): error C2065: 'GL_COLOR_BUFFER_BIT': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(39): error C2065: 'GL_DEPTH_BUFFER_BIT': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(39): error C3861: 'glClear': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(40): error C3861: 'glClearColor': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(41): error C2065: 'GL_MODELVIEW': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(41): error C3861: 'glMatrixMode': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(42): error C3861: 'glLoadIdentity': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(45): error C2065: 'GL_TRIANGLES': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(45): error C3861: 'glBegin': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(46): error C3861: 'glColor3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(47): error C3861: 'glVertex3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(48): error C3861: 'glColor3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(49): error C3861: 'glVertex3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(50): error C3861: 'glColor3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(51): error C3861: 'glVertex3f': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(52): error C3861: 'glEnd': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(54): error C3861: 'glutSwapBuffers': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(60): error C2065: 'GLsizei': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(60): error C2146: error de sintaxis: falta ')' delante del identificador 'width'
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(62): error C2065: 'GL_PROJECTION': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(62): error C3861: 'glMatrixMode': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(63): error C3861: 'glLoadIdentity': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(64): error C2065: 'GLfloat': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(64): error C2146: error de sintaxis: falta ';' delante del identificador 'width'
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(64): error C2146: error de sintaxis: falta ';' delante del identificador 'height'
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(65): error C3861: 'gluPerspective': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(67): error C2065: 'GL_MODELVIEW': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(67): error C3861: 'glMatrixMode': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(68): error C3861: 'glLoadIdentity': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(74): error C2065: 'GL_DEPTH_TEST': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(74): error C3861: 'glEnable': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(80): error C3861: 'glutInit': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(81): error C2065: 'GLUT_DOUBLE': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(81): error C2065: 'GLUT_RGBA': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(81): error C2065: 'GLUT_DEPTH': identificador no declarado
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(81): error C3861: 'glutInitDisplayMode': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(82): error C3861: 'glutInitWindowSize': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(83): error C3861: 'glutCreateWindow': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(85): error C3861: 'glutDisplayFunc': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(86): error C3861: 'glutIdleFunc': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(87): error C3861: 'glutReshapeFunc': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(88): error C3861: 'glutKeyboardFunc': no se encontró el identificador
+c:\users\hca\documents\graficascomp\opengl\prueba\test.cpp(89): error C3861: 'glutMainLoop': no se encontró el identificador
