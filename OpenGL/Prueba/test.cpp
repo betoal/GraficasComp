@@ -1,5 +1,5 @@
 #include <stdlib.h>
-//#include "GL/glut.h"
+#include "GL/glut.h"
 #include <iostream>
 #pragma comment(lib, "glut32.lib")
 #define WINDOW_TITLE "Project"
