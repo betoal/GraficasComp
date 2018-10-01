@@ -1,6 +1,14 @@
 #include <string>
+#include<ctime>
 #include "GL/glut.h"
 
+GLfloat angle = 45.0f;
+int refresh = 1000.0 / 60.0;
+
+void timer(int value) {
+	glutPostRedisplay();
+	glutTimerFunc(refresh, timer, 0);
+}
 
 void init(void) {
 	glClearColor(128, 128, 128, 0);
@@ -162,9 +170,13 @@ void secuencia(int arg[], int fila) {
 			cont = cont + 3;
 			break;
 		}
+		glTranslatef(0.5f, 0.0f, 0.0f);
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);
 		alfa = 0;
 		i++;
 	}
+	glTranslatef(0.5f, 0.0f, 0.0f);
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 }
 
 // Este método genera una matriz como base guía para la cerámica
@@ -197,23 +209,40 @@ void lineSegment(void) {
 	glEnd();
 	
 // Se manda llamar el método que rellena la matriz.
-	int y = 0;
+	int y = 0;	
+	//glPushMatrix();
 	for (int i = 0; i < 50; i++)
 	{
 		secuencia(mat[i], y);
 		y = y + 3;
 	}
-
+	glPopMatrix();
+	glutSwapBuffers();
+	//angle += 0.2;
 	glFlush();
 }
 
 void main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowPosition(300, 300);
+	glutInitWindowPosition(200, 200);
 	glutInitWindowSize(1000, 1000);
 	glutCreateWindow("Cerámica");
 	init();
 	glutDisplayFunc(lineSegment);
+	glutTimerFunc(0, timer, 0);
+	double tmr = 5.0;
+	bool flag = true;
+	clock_t start = clock();
+	double secondPassed;
+	while (flag) {
+		secondPassed = (clock() - start) / CLOCKS_PER_SEC;
+		if (secondPassed >= tmr) {
+			flag = false;
+			glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+		}
+	}
 	glutMainLoop();
+	
 }
