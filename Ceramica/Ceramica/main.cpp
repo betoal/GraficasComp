@@ -1,5 +1,7 @@
 #include <string>
-#include<ctime>
+#include <ctime>
+#include <Windows.h>
+#include <iostream>
 #include "GL/glut.h"
 
 GLfloat angle = 45.0f;
@@ -171,7 +173,7 @@ void secuencia(int arg[], int fila) {
 			break;
 		}
 		glTranslatef(0.5f, 0.0f, 0.0f);
-		glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);		
 		alfa = 0;
 		i++;
 	}
@@ -227,16 +229,19 @@ void main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowPosition(200, 200);
 	glutInitWindowSize(1000, 1000);
-	glutCreateWindow("Cerámica");
+	glutCreateWindow("No apto para epilépticos");
 	init();
 	glutDisplayFunc(lineSegment);
 	glutTimerFunc(0, timer, 0);
-	double tmr = 5.0;
+	std::cout << "Wait for it";
+	double tmr = 20.0;
 	bool flag = true;
 	clock_t start = clock();
 	double secondPassed;
 	while (flag) {
 		secondPassed = (clock() - start) / CLOCKS_PER_SEC;
+		if (secondPassed >= tmr / 2 && secondPassed <= tmr * 51e-2)
+			std::cout << "Almost there ";
 		if (secondPassed >= tmr) {
 			flag = false;
 			glClear(GL_COLOR_BUFFER_BIT);
