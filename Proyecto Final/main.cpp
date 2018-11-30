@@ -4,10 +4,15 @@
 #include <iostream>
 #include "GL/glut.h"
 
-#define IMAGE_ROWS 64      // La textura de  imagen de las columnas y renglones
+// La textura de  imagen de las columnas y renglones para cubo
+#define IMAGE_ROWS 64
 #define IMAGE_COLS 64
 
-#define DEGREES_PER_PIXEL  0.6f // Variable para controlar la velocidad de rotación con el mouse
+// La textura de  imagen de las columnas y renglones para fondo
+#define IMAGE_ROWS_F 512
+#define IMAGE_COLS_F 512
+
+#define DEGREES_PER_PIXEL  1.0f // Variable para controlar la velocidad de rotación con el mouse
 
 
 typedef struct {
@@ -16,6 +21,18 @@ typedef struct {
 	int x;
 	int y;
 } MouseState;
+
+struct rotacion {
+	bool rota;    // Animación o movimiento
+	float x, y, z;      // Valores actuales de rotacion
+	int current_axis; // 0 para x, 1 para y, 2 para z
+} cube_rotate;
+
+//struct traslacion {
+//	bool mueve;    // Animación o movimiento
+//	float x, y, z;      // Valores actuales de traslacion
+//	int current_axis; // 0 para x, 1 para y, 2 para z
+//} cube_traslate;
 
 MouseState mouseState = { false, false, 0, 0 };
 
@@ -27,25 +44,27 @@ int windowPosX = 50;      // Esquina superior izquierda x
 int windowPosY = 50;      // Esquina superior izquierda y
 bool fullScreenMode = true; // Full-screen?
 
-struct rotacion {
-	bool rota;    // Animación o movimiento
-	float x, y, z;      // Valores actuales de rotacion
-	int current_axis; // 0 para x, 1 para y, 2 para z
-} cube_state;
+static GLuint textures[2];
 
-							// Textura
-GLubyte imageData[IMAGE_ROWS][IMAGE_COLS][3]; // Textura como image data
+// Textura
+GLubyte imageData[IMAGE_ROWS][IMAGE_COLS][3]; // Textura como image data para cubo
+GLubyte imageDataF[IMAGE_ROWS_F][IMAGE_COLS_F][3]; // Textura como image data para fondo
 
-											  // Animacion
+// Animacion
 GLfloat xAngle = 0.0f;  // Ángulo rotacional en x-axis
 GLfloat yAngle = 0.0f;  // Ángulo rotacional en y-axis
 
-						// Cargar el arreglo imageData con el patron de ajedrez
+// Dimensiones del plano ortogonal
+GLfloat xmin = -20.0f, ymin = -20.0f;
+GLfloat xmax =  20.0f, ymax =  20.0f;
+GLfloat dnear = -5.0f, dfar = -20.0f; // Puntos donde se proyectan los objetos en z
+
+// Cargar el arreglo imageData con el patron de ajedrez para cubo
 void loadTextureImageData() {
 	int value;
 	for (int row = 0; row < IMAGE_ROWS; row++) {
 		for (int col = 0; col < IMAGE_COLS; col++) {
-			// Cada celda es de 8x8, value es 0 o 255 (negro o blanco)
+			// Cada celda es de IMAGE_ROWSxIMAGE_COLS, value es 0 o 255 (negro o blanco)
 			value = (((row & 0x8) == 0) ^ ((col & 0x8) == 0)) * 255;
 			imageData[row][col][0] = (GLubyte)value;
 			imageData[row][col][1] = (GLubyte)value;
@@ -54,12 +73,32 @@ void loadTextureImageData() {
 	}
 }
 
-// Iniciar OpenGL
+// Cargar el arreglo imageData con el patron de ajedrez para fondo
+void loadTextureImageB() {
+	int value;
+	for (int row = 0; row < IMAGE_ROWS_F; row++) {
+		for (int col = 0; col < IMAGE_COLS_F; col++) {
+			// Cada celda es de IMAGE_ROWS_FxIMAGE_COLS_F, value es 0 o 255 (negro o blanco)
+			value = (((row & 0x8) == 0) ^ ((col & 0x8) == 0)) * 255;
+			imageDataF[row][col][0] = (GLubyte)value;
+			imageDataF[row][col][1] = (GLubyte)value;
+			imageDataF[row][col][2] = (GLubyte)value;
+		}
+	}
+}
+
+// Iniciar OpenGL y crear texturas
 void initGL(GLvoid) {
 
-	cube_state.rota = false;
-	cube_state.x = cube_state.y = cube_state.z = 0.0f;
-	cube_state.current_axis = 0;
+	// Objeto para rotar con teclado
+	cube_rotate.rota = false;
+	cube_rotate.x = cube_rotate.y = cube_rotate.z = 0.0f;
+	cube_rotate.current_axis = 0;
+
+	//// Objeto para trasladar con teclado
+	//cube_traslate.mueve = false;
+	//cube_traslate.x = cube_traslate.y = cube_traslate.z = 0.0f;
+	//cube_traslate.current_axis = 0;
 
 	glShadeModel(GL_SMOOTH);               // Habilitar smooth shading del color
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // Poner background (clear) color a blanco
@@ -69,66 +108,132 @@ void initGL(GLvoid) {
 	glEnable(GL_DEPTH_TEST);  // Habilitar depth-buffer para quitar superficies escondidas
 	glDepthFunc(GL_LEQUAL);   // Tipo de depth testing para realizar
 
-							  // Textura
+	// Textura del cubo
 	loadTextureImageData();   // Cargar el patrón al image data array
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS, IMAGE_ROWS, 0, GL_RGB,
-		GL_UNSIGNED_BYTE, imageData);  // Crear textura del image data
+	glGenTextures(2, textures); // Carga la textura al arreglo textures[1]
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS, IMAGE_ROWS, 0, GL_RGB,
+		GL_UNSIGNED_BYTE, imageData);  // Crear textura del image data
+
+	// Textura del fondo
+	loadTextureImageB();   // Cargar el patrón al image data array
+	glBindTexture(GL_TEXTURE_2D, textures[2]); //Carga la textura al arreglo textures[2]
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS_F, IMAGE_ROWS_F, 0, GL_RGB,
+		GL_UNSIGNED_BYTE, imageDataF);  // Crear textura del image data
 
 	glEnable(GL_TEXTURE_2D);  // Habilitar textura 2D 
 
 							  // Corregir distorsión en la proyección en perspectiva
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	GLfloat xmin = -100.0, ymin = -80.0, xmax = 100.0, ymax = 80.0; // Dimensiones del plano ortogonal
-	GLfloat dnear = -5.0, dfar = -10.0; // Puntos donde se proyectan los objetos en z
 	glMatrixMode(GL_PROJECTION);
 	glOrtho(xmin, xmax, ymin, ymax, dnear, dfar); // Creación del plano ortogonal
+
 }
 
-void action(void)
+// Rotar el cubo
+void actionR(void)
 {
 	// Animar la rotación
-	float increment = 0.0125f;
-	switch (cube_state.current_axis)
+	float increment = 0.015f;
+	switch (cube_rotate.current_axis)
 	{
 	case 0:
-		cube_state.x += increment;
+		cube_rotate.x += increment;
 		break;
 	case 1:
-		cube_state.y += increment;
+		cube_rotate.y += increment;
 		break;
 	case 2:
-		cube_state.z += increment;
+		cube_rotate.z += increment;
+		break;
+	case 3:
+		cube_rotate.x += increment;
+		cube_rotate.y += increment;
+		cube_rotate.z += increment;
 		break;
 	default:
 		break;
 	}
-
 	glutPostRedisplay();
 }
 
-// Handler para la ventana
+// Trasladar el cubo
+//void actionT(void)
+//{
+//	float increment = 0.015f;
+//	// trasladar
+//	switch (cube_traslate.current_axis)
+//	{
+//	case 0:
+//		cube_traslate.x += increment;
+//		break;
+//	case 1:
+//		cube_traslate.x -= increment;
+//		break;
+//	case 2:
+//		cube_traslate.y += increment;
+//		break;
+//	case 3:
+//		cube_traslate.y -= increment;
+//		break;
+//	case 4:
+//		cube_traslate.z += increment;
+//		break;
+//	case 5:
+//		cube_traslate.z -= increment;
+//		break;
+//	default:
+//		break;
+//	}
+//}
+
+// Handler para el cubo, fondo y ventana
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Borra la pantalla y depth buffers
 
-														// Dibuja el cubo
 	glLoadIdentity();   // Resetea la vista
-	glTranslatef(0.0f, 0.0f, -5.0f); // Traslada el cubo al origen
+	glTranslatef(0.0f, 0.0f, dnear); // Traslada el cubo al origen
+
+	// Crear fondo
+
+	// Poner textura al fondo
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(xmin, ymin, dfar);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(xmax, ymin, dfar);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(xmax, ymax, dfar);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(xmin, ymax, dfar);
+	glEnd();
 	
 	// Para rotar con el mouse
 	glRotatef(xAngle, 1.0f, 0.0f, 0.0f);
 	glRotatef(yAngle, 0.0f, 1.0f, 0.0f);
 
 	// Para rotar con el teclado
-	glRotatef(cube_state.x, 1, 0, 0);
-	glRotatef(cube_state.y, 0, 1, 0);
-	glRotatef(cube_state.z, 0, 0, 1);
-	//glScalef(10, 10, 10);
+	glRotatef(cube_rotate.x, 1, 0, 0);
+	glRotatef(cube_rotate.y, 0, 1, 0);
+	glRotatef(cube_rotate.z, 0, 0, 1);
 
+	//// Para trasladar con el teclado
+	//glTranslatef(cube_traslate.x, 0, 0);
+	//glTranslatef(0, cube_traslate.y, 0);
+	//glTranslatef(0, 0, cube_traslate.z);
+
+	//glScalef(5.0f, 5.0f, 5.0f);
+
+	// Crear cubo
+
+	//Poner textura al cubo
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glBegin(GL_QUADS);
 	// Cara frontal
 	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
@@ -164,9 +269,6 @@ void display(void) {
 	glutSwapBuffers();
 }
 
-// Para el fondo
-
-
 // Para el re-size de la ventana
 void reshape(GLsizei width, GLsizei height) {  
 	if (height == 0) height = 1;  // para no dividir entre 0
@@ -190,18 +292,43 @@ void keyboard(unsigned char key, int x, int y) {
 	case 27:  // ESC key: sale del programa
 		exit(0); break;
 	case 'x': // rota eje x
-		cube_state.current_axis = 0;
+		cube_rotate.current_axis = 0;
 		break;
 	case 'y': // rota eje y
-		cube_state.current_axis = 1;
+		cube_rotate.current_axis = 1;
 		break;
 	case 'z': //rota eje z
-		cube_state.current_axis = 2;
+		cube_rotate.current_axis = 2;
 		break;
 	case 'r': // empieza o detiene rotación
-		cube_state.rota ^= 1;
-		glutIdleFunc(cube_state.rota ? action : NULL);
+		cube_rotate.rota ^= 1;
+		glutIdleFunc(cube_rotate.rota ? actionR : NULL);
 		break;
+	case 32: // rota todos los ejes
+		cube_rotate.current_axis = 3;
+		break;
+	//case 'a': // mueve a la izquierda
+	//	cube_traslate.current_axis = 0;
+	//	break;
+	//case 'd': // mueve a la derecha
+	//	cube_traslate.current_axis = 1;
+	//	break;
+	//case 'w': // mueve arriba
+	//	cube_traslate.current_axis = 2;
+	//	break;
+	//case 's': // mueve abajo
+	//	cube_traslate.current_axis = 3;
+	//	break;
+	//case 'q': // mueve cerca
+	//	cube_traslate.current_axis = 4;
+	//	break;
+	//case 'e': // mueve lejos
+	//	cube_traslate.current_axis = 5;
+	//	break;
+	//case 't': // empieza o detiene rotación
+	//	cube_traslate.mueve ^= 1;
+	//	glutIdleFunc(cube_traslate.mueve ? actionT : NULL);
+	//	break;
 	default: break;
 	}
 }
@@ -273,19 +400,18 @@ void mouseMove(int x, int y)
 
 // main function
 int main(int argc, char** argv) {
-	glutInit(&argc, argv);      // Inicia GLUT
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // Pone modos para 3D
-	glutInitWindowSize(windowWidth, windowHeight);  // Ancho y alto inicial de la ventana
-	glutInitWindowPosition(windowPosX, windowPosY); // Posición (x,y) inicial de la esquina superior izquierda
-	glutCreateWindow(title);     // Crea la ventana con el título dado
-	glutDisplayFunc(display);    // Registra el handler para la ventana
-	glutReshapeFunc(reshape);    // Registra el handler para el re-size de la ventana
-	glutKeyboardFunc(keyboard);  // Registra el handler para el teclado
-	glutSpecialFunc(specialKey); // Registra el handler para las teclas especiales
-	glutMouseFunc(mouse);        // Registra el handler para el mouse
-	glutMotionFunc(mouseMove);   // Registra el handler para el movimiento del mouse
-	//glutIdleFunc(action);		 // Registra el handler para la rotación automática
-	initGL();          // inicia OpenGl
+	glutInit(&argc, argv);										// Inicia GLUT
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);	// Pone modos para 3D
+	glutInitWindowSize(windowWidth, windowHeight);				// Ancho y alto inicial de la ventana
+	glutInitWindowPosition(windowPosX, windowPosY);				// Posición (x,y) inicial de la esquina superior izquierda
+	glutCreateWindow(title);									// Crea la ventana con el título dado
+	glutDisplayFunc(display);									// Registra el handler para la ventana
+	glutReshapeFunc(reshape);									// Registra el handler para el re-size de la ventana
+	glutKeyboardFunc(keyboard);									// Registra el handler para el teclado
+	glutSpecialFunc(specialKey);								// Registra el handler para las teclas especiales
+	glutMouseFunc(mouse);										// Registra el handler para el mouse
+	glutMotionFunc(mouseMove);									// Registra el handler para el movimiento del mouse
+	initGL();													// inicia OpenGl
 	glutMainLoop();
 	return 0;
 }
