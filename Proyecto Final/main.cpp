@@ -57,7 +57,7 @@ void loadTextureImageData() {
 // Iniciar OpenGL
 void initGL(GLvoid) {
 
-	cube_state.rota = true;
+	cube_state.rota = false;
 	cube_state.x = cube_state.y = cube_state.z = 0.0f;
 	cube_state.current_axis = 0;
 
@@ -82,12 +82,17 @@ void initGL(GLvoid) {
 
 							  // Corregir distorsión en la proyección en perspectiva
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	GLfloat xmin = -100.0, ymin = -80.0, xmax = 100.0, ymax = 80.0; // Dimensiones del plano ortogonal
+	GLfloat dnear = -5.0, dfar = -10.0; // Puntos donde se proyectan los objetos en z
+	glMatrixMode(GL_PROJECTION);
+	glOrtho(xmin, xmax, ymin, ymax, dnear, dfar); // Creación del plano ortogonal
 }
 
 void action(void)
 {
 	// Animar la rotación
-	float increment = 1.0f;
+	float increment = 0.0125f;
 	switch (cube_state.current_axis)
 	{
 	case 0:
@@ -112,10 +117,14 @@ void display(void) {
 
 														// Dibuja el cubo
 	glLoadIdentity();   // Resetea la vista
-	glTranslatef(0.0f, 0.0f, -5.0f);
-	glRotatef(xAngle, 1.0f, 0.0f, 0.0f); // Para rotar con el mouse
+	glTranslatef(0.0f, 0.0f, -5.0f); // Traslada el cubo al origen
+	
+	// Para rotar con el mouse
+	glRotatef(xAngle, 1.0f, 0.0f, 0.0f);
 	glRotatef(yAngle, 0.0f, 1.0f, 0.0f);
-	glRotatef(cube_state.x, 1, 0, 0); // Para rotar con el teclado
+
+	// Para rotar con el teclado
+	glRotatef(cube_state.x, 1, 0, 0);
 	glRotatef(cube_state.y, 0, 1, 0);
 	glRotatef(cube_state.z, 0, 0, 1);
 	//glScalef(10, 10, 10);
@@ -154,6 +163,9 @@ void display(void) {
 	glEnd();
 	glutSwapBuffers();
 }
+
+// Para el fondo
+
 
 // Para el re-size de la ventana
 void reshape(GLsizei width, GLsizei height) {  
@@ -272,7 +284,7 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(specialKey); // Registra el handler para las teclas especiales
 	glutMouseFunc(mouse);        // Registra el handler para el mouse
 	glutMotionFunc(mouseMove);   // Registra el handler para el movimiento del mouse
-	glutIdleFunc(action);		 // Registra el handler para la rotación con teclado
+	//glutIdleFunc(action);		 // Registra el handler para la rotación automática
 	initGL();          // inicia OpenGl
 	glutMainLoop();
 	return 0;
